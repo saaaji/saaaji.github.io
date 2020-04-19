@@ -1,62 +1,117 @@
-/**
- * Constants
- */
-const G = 6.67e-11; // gravitational constant
-const C = 3.0e+8; // speed of light
-
-/**
- * Setup
- */
-const planet = new AstronomicalObject(1e12);
-planet.position.set(500, 500);
-
-const planet1 = new AstronomicalObject(1);
-planet1.position.set(500, 400);
-planet1.velocity.set(0.5, 0);
-
-const bodies = [planet, planet1];
-
-console.log(Math.sqrt(G * planet.mass / 100));
-
-/**
- * Rendering
- */
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-window.addEventListener('resize', resizeCanvas);
+// resize listener
+window.addEventListener('resize', event => {
+  canvas.width = canvas.clientWidth;
+  canvas.height = canvas.clientHeight;
+});
 window.dispatchEvent(new Event('resize'));
 
-ctx.fillStyle = 'rgb(20, 20, 20)';
-ctx.fillRect(0, 0, canvas.width, canvas.height);
+// scale controls
+
+let minScale = 1e-10, scale = 1, scaleDampener = 0;
+window.addEventListener('wheel', ({deltaY}) => {
+  scaleDampener += deltaY * scale * 1e-4;
+});
 
 window.requestAnimationFrame(function render() {
-  ctx.fillStyle = 'rgba(20, 20, 20, 0.1)';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  ctx.fillStyle = 'white';
-  bodies.forEach(body => {
-    body.velocity.add(body.acceleration);
-    body.position.add(body.velocity);
-    body.draw(ctx);
-  });
+  // update scale
+  if (scale + (scaleDampener *= 0.6) < minScale) {
+    scale = minScale;
+    scaleDampener = 0;
+  } else {
+    scale += scaleDampener;
+  }
   
-  const d2 = planet.position.distanceToSquared(planet1.position);
   
-  const F_g = planet
-    .position
-    .clone()
-    .subtract(planet1.position)
-    .normalize()
-    .scale(G * (planet.mass * planet1.mass) / (d2 + Number.EPSILON));
+  ctx.setTransform(1, 0, 0, 1, 20, 20);
+  ctx.fillStyle = 'rgb(25, 25, 25)';
+  ctx.fillRect(-20, -20, canvas.width, canvas.height);
   
-  planet1.acceleration.copy(F_g.clone().scale(1 / planet1.mass));
-  planet.acceleration.copy(F_g.clone().scale(1 / planet.mass));
+  ctx.strokeStyle = 'rgb(50, 50, 50)';
+  ctx.fillStyle = 'rgb(200, 200, 200)';
+  ctx.font = '15px "Roboto"';
+
+  //let displayScale =
+  
+  let dSize = 200;
+  let size = dSize*scale;
+  //console.log(size);
+  
+  let yScale = 1, xScale = 1;
+  while (size > dSize*2) {
+    size *= 0.5;
+    yScale *= 0.5;
+    xScale *= 0.5;
+  }
+  
+  while (size < dSize/2) {
+    size *= 2;
+    yScale *= 2;
+    xScale *= 2;
+  }
+  
+  let x, y, labelText;
+  for (x = 0; x*size < canvas.width; x++) {
+    for (y = 0; y*size < canvas.height; y++) {
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x*size, y*size, size, size);
+      
+      if (y % 2 == 0 && x % 2 == 0) {
+        ctx.lineWidth = 2;
+        ctx.strokeRect(x*size, y*size, size*2, size*2);
+      }
+      
+      if (x === 0 && y % 2 === 0) {
+        labelText = (y*yScale).toString();
+        if (labelText.length > 5)
+          labelText = (y*yScale).toExponential(2);
+        ctx.fillText(labelText, x*size + 5, y*size + 15);
+      }
+        
+      if (y === 0 && x % 2 === 0) {
+        labelText = (x*xScale).toString();
+        if (labelText.length > 5)
+          labelText = (x*xScale).toExponential(2);
+        ctx.fillText(labelText, x*size + 5, y*size + 15);
+      }
+    }
+  }
+  
+  console.log(x*xScale, y*yScale);
+  
+  // test shapes
+  ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+  ctx.beginPath();
+  ctx.arc(0, 0, 4*dSize*scale, 0, 2*Math.PI);
+  ctx.fill();
+  
+  ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
+  ctx.fillRect(
+    10*dSize*scale,
+    10*dSize*scale,
+    5*dSize*scale,
+    5*dSize*scale,
+  );
+  
+  ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+  ctx.beginPath();
+  ctx.ellipse(
+    100 *dSize*scale,
+    500 *dSize*scale,
+    100 *dSize*scale,
+    50 *dSize*scale,
+    0,
+    0,
+    2*Math.PI
+  );
+  ctx.fill();
+  
+  
+  
+  
   
   window.requestAnimationFrame(render);
 });
-
-function resizeCanvas() {
-  canvas.width = canvas.clientWidth;
-  canvas.height = canvas.clientHeight;
-}
