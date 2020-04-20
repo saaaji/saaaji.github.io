@@ -9,109 +9,104 @@ window.addEventListener('resize', event => {
 window.dispatchEvent(new Event('resize'));
 
 // scale controls
+const Scale = {
+  
+  value: 1,
+  _dampener: 0,
+  
+  get min() {
+    return 1e-10;
+  },
+  
+  init() {
+    window.addEventListener('wheel', ({deltaY}) => {
+      this._dampener += deltaY * this.value * 1e-4;
+    });
+  },
+  
+  update() {
+    if (this.value + (this._dampener *= 0.6) < this.min) {
+      this.value = this.min;
+      this._dampener = 0;
+    } else {
+      this.value += this._dampener;
+    }
+  },
+  
+};
 
-let minScale = 1e-10, scale = 1, scaleDampener = 0;
-window.addEventListener('wheel', ({deltaY}) => {
-  scaleDampener += deltaY * scale * 1e-4;
+// initialize scale
+Scale.init();
+
+// initialize background grid
+const grid = new Grid({
+  cellSize: 50,
+  backgroundColor: 'rgb(10, 10, 10)',
+  minorGridColor: 'rgb(20, 20, 20)',
+  majorGridColor: 'rgb(30, 30, 30)',
+  fontName: 'monospace',
+  fontSize: 15,
+  fontColor: 'rgb(150, 150, 150)',
+  fontPadding: 5,
+  majorGridSize: 4,
+  majorGridLineWidth: 2,
+  minorGridLineWidth: 1,
+  drawMinorGrid: true,
+  canvas,
+  ctx,
 });
 
 window.requestAnimationFrame(function render() {
   
+  // update scene transform
+  ctx.setTransform(1, 0, 0, 1, canvas.width/2, canvas.height/2);
+  
   // update scale
-  if (scale + (scaleDampener *= 0.6) < minScale) {
-    scale = minScale;
-    scaleDampener = 0;
-  } else {
-    scale += scaleDampener;
-  }
+  Scale.update();
   
+  // draw grid
+  grid.draw(Scale.value);
   
-  ctx.setTransform(1, 0, 0, 1, 20, 20);
-  ctx.fillStyle = 'rgb(25, 25, 25)';
-  ctx.fillRect(-20, -20, canvas.width, canvas.height);
-  
-  ctx.strokeStyle = 'rgb(50, 50, 50)';
-  ctx.fillStyle = 'rgb(200, 200, 200)';
-  ctx.font = '15px "Roboto"';
-
-  //let displayScale =
-  
-  let dSize = 200;
-  let size = dSize*scale;
-  //console.log(size);
-  
-  let yScale = 1, xScale = 1;
-  while (size > dSize*2) {
-    size *= 0.5;
-    yScale *= 0.5;
-    xScale *= 0.5;
-  }
-  
-  while (size < dSize/2) {
-    size *= 2;
-    yScale *= 2;
-    xScale *= 2;
-  }
-  
-  let x, y, labelText;
-  for (x = 0; x*size < canvas.width; x++) {
-    for (y = 0; y*size < canvas.height; y++) {
-      ctx.lineWidth = 1;
-      ctx.strokeRect(x*size, y*size, size, size);
-      
-      if (y % 2 == 0 && x % 2 == 0) {
-        ctx.lineWidth = 2;
-        ctx.strokeRect(x*size, y*size, size*2, size*2);
-      }
-      
-      if (x === 0 && y % 2 === 0) {
-        labelText = (y*yScale).toString();
-        if (labelText.length > 5)
-          labelText = (y*yScale).toExponential(2);
-        ctx.fillText(labelText, x*size + 5, y*size + 15);
-      }
-        
-      if (y === 0 && x % 2 === 0) {
-        labelText = (x*xScale).toString();
-        if (labelText.length > 5)
-          labelText = (x*xScale).toExponential(2);
-        ctx.fillText(labelText, x*size + 5, y*size + 15);
-      }
-    }
-  }
-  
-  console.log(x*xScale, y*yScale);
-  
-  // test shapes
-  ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
-  ctx.beginPath();
-  ctx.arc(0, 0, 4*dSize*scale, 0, 2*Math.PI);
-  ctx.fill();
-  
-  ctx.fillStyle = 'rgba(0, 0, 255, 0.3)';
+  // draw objects
+  ctx.fillStyle = 'rgba(100, 100, 250, 0.5)';
   ctx.fillRect(
-    10*dSize*scale,
-    10*dSize*scale,
-    5*dSize*scale,
-    5*dSize*scale,
+    0,
+    0,
+    2 * grid.cellSize * Scale.value,
+    3 * grid.cellSize * Scale.value,
   );
   
-  ctx.fillStyle = 'rgba(0, 255, 0, 0.3)';
+  ctx.fillStyle = 'rgba(100, 250, 100, 0.5)';
+  ctx.beginPath();
+  ctx.arc(
+    1024 * grid.cellSize * Scale.value,
+    2048 * grid.cellSize * Scale.value,
+    512 * grid.cellSize * Scale.value,
+    0,
+    2 * Math.PI
+  );
+  ctx.fill();
+  
+  ctx.fillStyle = 'rgba(250, 100, 100, 0.5)';
   ctx.beginPath();
   ctx.ellipse(
-    100 *dSize*scale,
-    500 *dSize*scale,
-    100 *dSize*scale,
-    50 *dSize*scale,
+    1e6 * grid.cellSize * Scale.value,
+    1e6 * grid.cellSize * Scale.value,
+    4e5 * grid.cellSize * Scale.value,
+    0.9e6 * grid.cellSize * Scale.value,
     0,
     0,
-    2*Math.PI
+    2 * Math.PI,
   );
   ctx.fill();
   
-  
-  
-  
+  ctx.fillStyle = 'rgba(100, 250, 250, 0.5)';
+  ctx.fillRect(
+    1e9 * grid.cellSize * Scale.value,
+    1e9 * grid.cellSize * Scale.value,
+    5e9 * grid.cellSize * Scale.value,
+    2e9 * grid.cellSize * Scale.value,
+  );
   
   window.requestAnimationFrame(render);
 });
