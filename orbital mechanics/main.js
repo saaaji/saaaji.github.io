@@ -18,6 +18,10 @@ const Scale = {
     return 1e-10;
   },
   
+  get max() {
+    return 1;
+  },
+  
   init() {
     window.addEventListener('wheel', ({deltaY}) => {
       this._dampener += deltaY * this.value * 1e-4;
@@ -25,11 +29,14 @@ const Scale = {
   },
   
   update() {
-    if (this.value + (this._dampener *= 0.6) < this.min) {
+    if (this.value + this._dampener < this.min) {
       this.value = this.min;
       this._dampener = 0;
+    } else if (this.value + this._dampener > this.max) {
+      this.value = this.max;
+      this._dampener = 0;
     } else {
-      this.value += this._dampener;
+      this.value += (this._dampener *= 0.6);
     }
   },
   
@@ -40,11 +47,11 @@ Scale.init();
 
 // initialize background grid
 const grid = new Grid({
-  cellSize: 50,
+  cellSize: 75,
   backgroundColor: 'rgb(10, 10, 10)',
   minorGridColor: 'rgb(20, 20, 20)',
   majorGridColor: 'rgb(30, 30, 30)',
-  fontName: 'monospace',
+  fontName: '"Roboto", monospace',
   fontSize: 15,
   fontColor: 'rgb(150, 150, 150)',
   fontPadding: 5,
@@ -55,6 +62,22 @@ const grid = new Grid({
   canvas,
   ctx,
 });
+
+// constants
+const G = 6.67e-11;
+
+// unit conversions
+
+
+// init
+const body1 = new AstronomicalObject(1e10, 5, 'rgb(100, 100, 250)', 'Planet');
+const body2 = new AstronomicalObject(1e15, 10, 'rgb(250, 250, 100)', 'Sun');
+
+body1.position.x = 256;
+body1.velocity.set(-0.1, 20);
+
+const bodies = [body1, body2];
+let timeStep = 1;
 
 window.requestAnimationFrame(function render() {
   
@@ -67,46 +90,32 @@ window.requestAnimationFrame(function render() {
   // draw grid
   grid.draw(Scale.value);
   
-  // draw objects
-  ctx.fillStyle = 'rgba(100, 100, 250, 0.5)';
-  ctx.fillRect(
-    0,
-    0,
-    2 * grid.cellSize * Scale.value,
-    3 * grid.cellSize * Scale.value,
-  );
+  for (let i = 0; i < bodies.length; i++) {
+    const body = bodies[i];
+    
+    // update velocity : change in velocity = acceleration * time step
+    body.velocity.addScaledVector(body.acceleration, timeStep);
+    
+    // update position : change in position = velocity * time step
+    body.position.addScaledVector(body.velocity, timeStep);
+    
+    body.draw(ctx, Scale.value * grid.cellSize, true);
+  }
   
-  ctx.fillStyle = 'rgba(100, 250, 100, 0.5)';
-  ctx.beginPath();
-  ctx.arc(
-    1024 * grid.cellSize * Scale.value,
-    2048 * grid.cellSize * Scale.value,
-    512 * grid.cellSize * Scale.value,
-    0,
-    2 * Math.PI
-  );
-  ctx.fill();
+  const distance = body1.position.distanceTo(body2.position);
   
-  ctx.fillStyle = 'rgba(250, 100, 100, 0.5)';
-  ctx.beginPath();
-  ctx.ellipse(
-    1e6 * grid.cellSize * Scale.value,
-    1e6 * grid.cellSize * Scale.value,
-    4e5 * grid.cellSize * Scale.value,
-    0.9e6 * grid.cellSize * Scale.value,
-    0,
-    0,
-    2 * Math.PI,
-  );
-  ctx.fill();
+  // update acceleration : force of gravity = G * M * m / d^2
+  const gravityOnBody1 = body2
+    .position
+    .clone()
+    .subtract(body1.position)
+    .normalize()
+    .scale(G * body1.mass * body2.mass / (distance ** 2 + Number.EPSILON));
+    
+  const gravityOnBody2 = gravityOnBody1.clone().scale(-1);
   
-  ctx.fillStyle = 'rgba(100, 250, 250, 0.5)';
-  ctx.fillRect(
-    1e9 * grid.cellSize * Scale.value,
-    1e9 * grid.cellSize * Scale.value,
-    5e9 * grid.cellSize * Scale.value,
-    2e9 * grid.cellSize * Scale.value,
-  );
+  body1.acceleration.copy(gravityOnBody1.scale(1 / body1.mass));
+  body2.acceleration.copy(gravityOnBody2.scale(1 / body2.mass));
   
   window.requestAnimationFrame(render);
 });

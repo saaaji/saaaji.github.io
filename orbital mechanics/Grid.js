@@ -52,18 +52,23 @@ class Grid {
     let displaySize = this.cellSize * scale;
     let displayScale = 1;
     
-    // resize display parameters as needed
+    // resize display vars
     if (displaySize > this.cellSize * 2) {
       while (displaySize > this.cellSize * 2) {
         displaySize *= 0.5;
         displayScale *= 0.5;
       }
-    } else if (displaySize < this.cellSize / 2) {
-      while (displaySize < this.cellSize / 2) {
+    } else if (displaySize < this.cellSize * 0.5) {
+      while (displaySize < this.cellSize * 0.5) {
         displaySize *= 2;
         displayScale *= 2;
       }
     }
+    
+    
+  //console.log('true');
+    
+    //console.log(displaySize);
     
     // setup
     let x, y, labelText, xMax = 0, yMax = 0;
