@@ -63,7 +63,7 @@ export function negate(dst, a) {
 
 // stores a unit vector pointing in the same direction as A in dst
 export function norm(dst, a) {
-  const invLen = 1 / this.length(a);
+  const invLen = 1 / length(a);
   dst[0] = a[0] * invLen;
   dst[1] = a[1] * invLen;
   return dst;
