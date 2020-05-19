@@ -1,0 +1,70 @@
+body {
+  margin:0;
+}
+canvas {
+  width:100vw;
+  height:100vh;
+  display:block;
+  background-color:rgb(20, 20, 20);
+  cursor:crosshair;
+}
+div#orbital-info {
+  position:fixed;
+  top:5px;
+  left:5px;
+  min-width:30%;
+  max-width:30%;
+  padding:4px;
+  font-family:"Roboto", sans-serif;
+  font-size:12pt;
+  color:rgb(200, 200, 200);
+  background-color:rgba(80, 80, 80, 0.5);
+  border-radius:2px;
+}
+span.info-highlight {
+  font-weight:bold;
+}
+input[disabled="true"] {
+  cursor:not-allowed;
+  background-color:rgb(30, 30, 30) !important;
+  color:rgb(200, 200, 200) !important;
+}
+input[type="number"] {
+  font-family:"Roboto", sans-serif;
+  font-size:12pt;
+  color:rgb(200, 200, 200);
+  background-color:rgb(40, 40, 40);
+  border:1px solid rgb(200, 200, 200);
+  border-radius:2px;
+  padding:2px;
+}
+div#simulation-parameters {
+  display:flex;
+  flex-direction:column;
+}
+div.simulation-parameter-row {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:5px;
+}
+input#start-simulation {
+  font-family:"Roboto", sans-serif;
+  font-size:12pt;
+  font-weight:bold;
+  color:rgb(50, 50, 50);
+  background-color:rgb(100, 200, 100);
+  border:none;
+  border-radius:2px;
+  padding:5px;
+  margin:5px;
+}
+div#hint-box {
+  position:fixed;
+  bottom:5px;
+  left:5px;
+  color:rgb(200, 200, 200);
+  font-size:12pt;
+  font-family:"Roboto", sans-serif;
+  font-style:italic;
+}

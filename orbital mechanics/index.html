@@ -2,19 +2,60 @@
 <html>
   <head>
     <title>Planetary Motion</title>
-    <style>
-      body {
-        margin:0;
-      }
-      canvas {
-        width:100vw;
-        height:100vh;
-        display:block;
-        background-color:rgb(30, 30, 30);
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="./styles.css"/>
   </head>
   <body>
+    <div id="orbital-info">
+      <div id="hint-box">Scroll up or down to adjust scale</div>
+      <div id="simulation-parameters">
+        <div class="simulation-parameter-row">
+          <span>Simulation timestep (hours): </span>
+          <input type="number" value="1" id="pick-time"/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Initial direction (degrees): </span>
+          <input type="number" value="90" id="pick-angle"/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Initial speed (m/s): </span>
+          <input type="number" value="29771" id="pick-speed"/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Initial radius (m): </span>
+          <input type="number" value="1.496e+11" id="pick-radius"/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Initial mass (kg): </span>
+          <input type="number" value="5.972e+24" id="pick-mass"/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Show path: </span>
+          <input type="checkbox" id="show-points" checked/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Show ellipse fit: </span>
+          <input type="checkbox" id="show-ellipse-fit" checked/>
+        </div>
+        <div class="simulation-parameter-row">
+          <span>Show intervals: </span>
+          <input type="checkbox" id="show-orbital-intervals" checked/>
+        </div>
+        <input type="button" value="Start Simulation" id="start-simulation"/>
+      </div>
+      <hr/>
+      <h3>Orbital Simulation Data:</h3>
+      <ul>
+        <li>Orbital period: <span class="info-highlight" id="orbital-period">0</span></li>
+        <li>Semi-major axis: <span class="info-highlight" id="semi-major-axis">0</span></li>
+        <li>Semi-minor axis: <span class="info-highlight" id="semi-minor-axis">0</span></li>
+        <li>Ellipse center: <span class="info-highlight" id="ellipse-center">0</span></li>
+        <li>Ellipse orienation: <span class="info-highlight" id="ellipse-orientation">0</span></li>
+        <li>Orbital eccentricity: <span class="info-highlight" id="ellipse-eccentricity">0</span></li>
+        <li>Interval areas: <span class="info-highlight" id="interval-areas">0</span></li>
+        <!--<li><span id="planet-pos-label">Planet position</span>: <span class="info-highlight" id="planet-pos">(0, 0)</span></li>
+        <li><span id="star-pos-label">Sun position</span>: <span class="info-highlight" id="star-pos">(0, 0)</span></li>-->
+      </ul>
+    </div>
     <canvas id="canvas" width="500" height="500"></canvas>
     <script src="./src/main.js" type="module"></script>
   </body>
