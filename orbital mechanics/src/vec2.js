@@ -1,11 +1,11 @@
 // returns a new vec2
 export function create() {
-    return new Float32Array(2);
+    return new Float64Array(2);
 }
 
 // creates a new vec2 from X and Y
 export function fromValues(x, y) {
-  const dst = new Float32Array(2);
+  const dst = new Float64Array(2);
   dst[0] = x;
   dst[1] = y;
   return dst;
@@ -13,7 +13,7 @@ export function fromValues(x, y) {
 
 // creates a new vec2 with the same components as A
 export function clone(a) {
-  const dst = new Float32Array(2);
+  const dst = new Float64Array(2);
   dst[0] = a[0];
   dst[1] = a[1];
   return dst;
