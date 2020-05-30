@@ -6,7 +6,7 @@ canvas {
   height:100vh;
   display:block;
   background-color:rgb(20, 20, 20);
-  cursor:crosshair;
+  cursor:pointer;
 }
 div#orbital-info {
   position:fixed;
@@ -14,6 +14,8 @@ div#orbital-info {
   left:5px;
   min-width:30%;
   max-width:30%;
+  max-height:90%;
+  overflow-y:scroll;
   padding:4px;
   font-family:"Roboto", sans-serif;
   font-size:12pt;
@@ -26,8 +28,7 @@ span.info-highlight {
 }
 input[disabled="true"] {
   cursor:not-allowed;
-  background-color:rgb(30, 30, 30) !important;
-  color:rgb(200, 200, 200) !important;
+  border-color:rgb(250, 100, 100) !important;
 }
 input[type="number"] {
   font-family:"Roboto", sans-serif;
@@ -58,6 +59,10 @@ input#start-simulation {
   border-radius:2px;
   padding:5px;
   margin:5px;
+}
+input#start-simulation[disabled="true"] {
+  background-color:rgb(100, 100, 100);
+  color:rgb(150, 150, 150);
 }
 div#hint-box {
   position:fixed;
