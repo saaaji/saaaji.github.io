@@ -71,8 +71,9 @@ export default class TwoBodySystem {
       eccentricity: 0,
     };
     
-    this.intervalSize = 5;
+    this.intervalSize = 20;
     this._orbitalIntervals = [];
+    this._previousIntervalSunPos = [0, 0];
     this.intervalAreas = [];
     
     // plotting parameters
@@ -82,7 +83,7 @@ export default class TwoBodySystem {
       showEllipse: true,
       showIntervals: true,
       ellipseColor: 'rgb(250, 100, 100)',
-      intervalColor: 'rgba(250, 160, 100, 0.5)',
+      intervalColor: 'rgb(250, 160, 100)',
       scale: 1,
     };
   }
@@ -141,7 +142,7 @@ TwoBodySystem.prototype.plot = function plot() {
     this._ctx.fillStyle = this.plotSettings.intervalColor;
     this._orbitalIntervals.forEach(interval => {
       this._ctx.beginPath();
-      this._ctx.moveTo(...this.star.position.map(n => n * scale));
+      this._ctx.moveTo(...this._previousIntervalSunPos.map(n => n * scale));
       this._ctx.lineTo(...interval[0].map(n => n * scale));
       this._ctx.lineTo(...interval[1].map(n => n * scale));
       this._ctx.fill();
@@ -174,7 +175,7 @@ TwoBodySystem.prototype.update = (() => {
   const planetToStar = vec2.create();
   
   return function update() {
-    for (let i = 0; i < this.stepsPerUpdate; i++) {
+    for (let i = 0; i < 1000; i++) {
       // increment total simulation time
       this._worldTime += this.timeStep;
       
@@ -245,11 +246,24 @@ TwoBodySystem.prototype.update = (() => {
         this.ellipseFit.theta = theta;
         this.ellipseFit.eccentricity = Math.sqrt(1 - (this.ellipseFit.b**2 / this.ellipseFit.a**2));
         
-        console.log(`Period ~ sqrt(a^3): ${this._period}\t${Math.sqrt(this.ellipseFit.a**3)}`);
+        console.log(`Period - a: ${this._period * S_TO_DAYS}\t${this.ellipseFit.a * M_TO_AU}`);
         
         this.intervalAreas.length = 0;
         this._orbitalIntervals.length = 0;
         
+        let chartStr = '';
+        for (let i = 0; i < this._orbitalPositions.length-1; i++) {
+          const interval = [
+            this._orbitalPositions[i],
+            this._orbitalPositions[i+1],
+          ];
+          //this._orbitalIntervals.push(interval);
+          const area = triangleArea(this.star.position, ...interval);
+          chartStr += `${i}\t${area}\n`;
+        }
+        //console.log(chartStr);
+        
+        /*
         for (let i = 0; i < 10; i++) {
           const idx = Math.floor(Math.random()*(this._orbitalPositions.length))
           const intervalPoints = this._orbitalPositions.slice(idx, idx+2);
@@ -262,6 +276,16 @@ TwoBodySystem.prototype.update = (() => {
             this.intervalAreas.push(triangleArea(this.star.position, ...intervalBoundary));
           }
         }
+        this._previousIntervalSunPos = vec2.clone(this.star.position);
+        */
+        
+        chartStr = '';
+        for (let i = 0; i < this._orbitalPositions.length; i++) {
+          const pos = this._orbitalPositions[i];
+          chartStr += `${pos[0]}\t${pos[1]}\n`;
+        }
+        console.log(chartStr);
+        console.log(this.ellipseFit.conic.printEquation());
         
         this._orbitalPositions.length = 0;
       }
