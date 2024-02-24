@@ -16,15 +16,198 @@
         </div>
 
         <div class="nav">
-          <a href="javascript:void(0);" class="current">&#x2022; Projects <span class="yah">(you are here)</span></a>
-          <a href="../../index.html">&#x2022; Info</a>
+          <ul>
+            <li><a href="javascript:void(0);" class="current">Projects <span class="yah">(you are here)</span></a></li>
+            <li><a href="../../index.html">Info</a></li>
+          </ul>
         </div>
       </div>
+      <div class="projs">
+        <a href="#pt">GPU Path Tracer (2021-2023)</a>
+        <a href="#fits">FITS Visualizer (2023)</a>
+        <a href="#lib3d">3D Library (2019-2020)</a>
+        <a href="#conj">Conjumate (2018)</a>
+      </div>
+      <div class="content-container">
+        <div class="content">
+          <div class="card">
+            <div class="t" id="pt">GPU Path Tracer for the Web</div>
+            <div class="subt">
+              2021-2023, <a href="https://github.com/saaaji/WebGL-2-Path-Tracer/" target="_blank">github.com/saaaji/WebGL-2-Path-Tracer</a>
+            </div>
+            <div class="im-group">
+              <div class="im"><img src="../images/rtx_box.png"/></div>
+              <div>
+                <p>
+                  <div class="subt">What?</div>
+                  A path tracer renders 3D models such that the global illumination
+                  is faithful to reality&#8212;that is, it produces physically-accurate
+                  renderings of them. <span style="font-weight:500">This project is a path tracer written entirely
+                  from scratch in JavaScript and WebGL, so it can run in a browser</span> (<a href="https://saaaji.github.io/WebGL-2-Path-Tracer/src/">check it out!</a>)
+                </p>
+                <p>
+                  The path tracing algorithm leverages Monte Carlo integration techniques
+                  to probalistically evaluate the "light transport integral," which describes
+                  the interaction of light rays with surfaces in accordance with material properties.
+                  Because it is highly-parallelizable by nature, millions of rays are traced
+                  concurrently in a series of GLSL shaders.
+                </p>
+                <p>
+                  In addition to the GPU-accelerated renderer, the application also features 
+                  an editor for loading and exporting asset files and output images, as well
+                  as modifying pose and camera attributes before rendering.
+                </p>
+              </div>
+            </div>
+            <div class="im-group">
+              <div>
+                <p>
+                  <div class="subt">How?</div>
+                  The application implements several rendering techniques & technologies:
+                  <ul>
+                    <li>Implemenation of DICE's "Frame Graph" rendering abstraction to manage GPU resources</li>
+                    <li>glTF & GLB, HDRi loaders (models & environment maps)</li>
+                    <li>2-Level Bounding Volume Hierarchy (BVH), Bottom Level Acceleration Structures (BLAS), Top Level Acceleration Structue (TLAS)</li>
+                    <li>Full glTF scene-graph, pose manipulation in editor & TLAS rebuild</li>
+                    <li>Physically-Based BRDF (PBR), Next Event Estimation (NEE), Multiple Importance Sampling (MIS)</li>
+                  </ul>
+                </p>
+              </div>
+              <div class="im"><img src="../images/rtx_monkey.png"/></div>
+            </div>
+            <div class="im-group">
+              <div class="im"><img src="../images/rtx_pericles.png"/></div>
+              <div class="im"><img src="../images/rtx_lego2.png"/></div>
+            </div>
+            <div class="f">
+              <div class="skill">WebGL/OpenGL ES</div>
+              <div class="skill">GLSL</div>
+              <div class="skill">JavaScript</div>
+              <div class="skill">Path/Ray Tracing</div>
+              <div class="skill">Monte Carlo Method</div>
+              <div class="skill">HTML/CSS</div>
+              <div class="skill">High Performance Computing (HPC)</div>
+              <div class="skill">Physically-Based Rendering (PBR)</div>
+            </div>
+          </div>
 
-      <div class="content">
-        <div class="card">Test</div>
+          <div class="card">
+            <div class="t" id="fits">FITS Visualizer</div>
+            <div class="subt">
+              2023, <a href="https://github.com/saaaji/WebGL-2-Path-Tracer/" target="_blank">github.com/saaaji/WebGL-2-Path-Tracer &lt;plugin&gt;</a>
+            </div>
+            <div class="im-group">
+              <div class="im"><img src="../images/eagle1.png"/></div>
+              <div>
+                <p>
+                  <div class="subt">What?</div>
+                  FITS is a data format used for storing atronomical data, and
+                  measurements from satellites are typically stored in this format
+                  for archival and analysis purposes. 
+                </p>
+                <p>
+                  Sometimes, these FITS archives contain "narrow-band filters", or photos 
+                  taken of the same target, but isolating for different wavelengths of light.
+                  However, the raw images are typically entirely dark save a few bright spots. 
+                </p>
+                <p>
+                  Curious how those dazzlingly colorful images of nebulae are created, I wrote
+                  a "plug-in" for my path tracer (to leverage existing shader/pipeline utilties) 
+                  that could composite several narrow-band filters into a single color image.
+                </p>
+              </div>
+            </div>
+            <div class="im-group">
+              <div>
+                <p>
+                  <div class="subt">How?</div>
+                  Because the bright spots in the image (stars, gases, etc.) only take up a 
+                  narrow range of intensity values, the plug-in performs a series of filters on
+                  the GPU to "equalize the histogram" of pixel values in each input narrow-band image,
+                  such that intensities on the histogram are better distributed. 
+                </p>
+                <p>
+                  This is
+                  achieved by adjusting the black point, white point, and gamma of each image
+                  such that the contrast is improved. A median filter helps remove noise and 
+                  finally each narrow-band image is assigned to an RGB channel to produce
+                  the final color image.
+                </p>
+              </div>
+              <div class="im"><img src="../images/random1.png"/></div>
+              <!-- <div class="im"><img src="../images/eagle3.jpg"/></div> -->
+            </div>
+            <div class="f">
+              <div class="skill">WebGL</div>
+              <div class="skill">GLSL</div>
+              <div class="skill">Graphics</div>
+              <div class="skill">Image Processing</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="t" id="lib3d">Web-based 3D Graphics Library</div>
+            <div class="subt">
+              2019, <a href="https://github.com/Encryptr/saturn.js" target="_blank">github.com/Encryptr/saturn.js</a>
+            </div>
+            <div class="im-group">
+              <div class="im"><img src="../images/lib3d_2.png"/></div>
+              <div>
+                <p>
+                  <div class="subt">What?</div>
+                  As my first foray into 3D graphics, I implemented a small rendering library
+                  modeled off of THREE.js in JavaScript and WebGL. Some basic techniques
+                  I implemented include:
+                  <ul>
+                    <li>Forward & Deferred Rendering</li>
+                    <li>Directional Lights, Point Lights, Spot Lights</li>
+                    <li>glTF & OBJ loader</li>
+                    <li>Anti-Aliasing (MSAA), Basic Shadow Mapping</li>
+                  </ul>
+                </p>
+              </div>
+            </div>
+            <div class="im-group">
+              <div class="im"><img src="../images/lib3d_1.png"/></div>
+              <div class="im"><img src="../images/lib3d_3.png"/></div>
+            </div>
+            <div class="f">
+              <div class="skill">WebGL</div>
+              <div class="skill">GLSL</div>
+              <div class="skill">Graphics</div>
+              <div class="skill">Real Time Rendering</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="t" id="conj">Conjumate</div>
+            <div class="subt">
+              2018, <a href="https://chromewebstore.google.com/detail/conjumate/mcpdjkpfkgcoajhoemfbgddkopipnoln" target="_blank">chromewebstore.google.com/detail/conjumate</a>
+            </div>
+            <div class="im-group">
+              <div>
+                <p>
+                  <div class="subt">What?</div>
+                  Conjumate was an app I wrote for ChromeOS in JavaScript as a way to
+                  help Spanish-learners practice their verb conjugations (I was taking
+                  Spanish at the time). At its peak it had around 60 weekly users
+                  at my high school, and in retrospect it was a good exercise in
+                  using CS to address a need my classmates and I had.
+                </p>
+              </div>
+              <div class="im"><img src="../images/conj1.png"/></div>
+              <div class="im"><img src="../images/conj2.png"/></div>
+            </div>
+            <div class="f">
+              <div class="skill">JavaScript</div>
+              <div class="skill">HTML/CSS</div>
+            </div>
+          </div>
+
+          <div class="scroll-indicator">&#x2193;</div>
+        </div>
       </div>
     </div>
-    <script src="./src/js/index.js"></script>
+    <script src="../js/index.js"></script>
   </body>
 </html>

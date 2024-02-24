@@ -1,9 +1,9 @@
 :root {
-  --con-margin: 10px;
+  --con-margin: 15px;
   --con-padding: 1em;
   --con-border: 1px;
   --dim-offset: calc(2 * (var(--con-margin) + var(--con-padding) + var(--con-border)));
-  --bg-col: #dbdbdb;
+  --bg-col: whitesmoke;
   --font-col: rgb(15, 15, 15);
 
   --card-gap: 1em;
@@ -15,8 +15,8 @@ html, body {
   height: 100vh;
   overflow: auto;
 
-  /* background-color: var(--bg-col); */
-  background-image: linear-gradient(var(--bg-col), #b0b0b0);
+  background-color: var(--bg-col);
+  background-image: linear-gradient(160deg, var(--bg-col), #b0b0b0);
 }
 
 .container {
@@ -49,7 +49,7 @@ html, body {
 }
 
 .sidebar {
-  height: 45%;
+  height: 30%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -73,7 +73,6 @@ html, body {
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 0.8em;
 }
 
 .nav a:hover {
@@ -103,18 +102,15 @@ html, body {
 
 .content-container {
   position: relative;
-  max-width: 50%;
+  width: 60%;
   overflow:hidden;
 }
 
 .content {
-  /* align-self: flex-end; */
   display: flex;
   flex-direction: column;
   gap: var(--card-gap);
   padding: 0 2em 0 0;
-  /* overflow: scroll; */
-  /* overflow-x: auto; */
   height: 100%;
   overflow-y: scroll;
   scrollbar-width: 0;
@@ -133,6 +129,9 @@ html, body {
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
   font-size: 13pt;
+  width: calc(100% - 2 * var(--card-padding));
+  display: flex;
+  flex-direction: column;
 }
 
 .content .card .t {
@@ -140,6 +139,36 @@ html, body {
   display: block;
   margin: 0 0 0.5em 0;
   font-size: 15pt;
+}
+
+.content .card .subt {
+  font-weight: 300;
+  display: block;
+  margin: -0.5em 0 0.5em 0;
+  font-size: 12pt;
+  font-weight: 500;
+}
+
+.content .card .f {
+  /* display: block; */
+  margin: 0.75em 0 0 0;
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+
+.content .card .skill {
+  display: inline;
+  padding: 0.2em;
+  border-radius: 5px;
+  background-color: #F99417;
+  color: var(--font-col);
+  font-weight: 700;
+
+}
+
+.content .card p {
+  margin: 0 0 0.5em 0;
 }
 
 .content .card a {
@@ -157,8 +186,7 @@ html, body {
   color: var(--font-col);
   width: 100%;
   height: 3em;
-  font-family: monospace;
-  font-weight: 700;
+  font-weight: 500;
   font-size: 15pt;
   background-image: linear-gradient(transparent, #b0b0b0 60%);
   bottom: 0;
@@ -169,4 +197,115 @@ html, body {
 .content .scroll-indicator.hidden {
   opacity: 0;
   transition: opacity 0.2s;
+}
+
+.im-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  margin: 0 0 0.5em 0;
+  align-self: center;
+  gap: 1em;
+}
+
+.im-group div {
+  flex: 1;
+}
+
+.im-group div.im {
+  justify-content: center;
+  align-items: center;
+  max-width: 75%;
+  display: flex;
+}
+
+.im-group img {
+  object-fit: contain;
+  max-width: 100%;
+}
+
+.projs {
+  position:absolute;
+  display: flex;
+  flex-direction:column;
+  gap: 1em;
+  left: 2em;
+  bottom: 2em;
+  font-size: 12pt;
+  font-family: monospace, sans-serif;
+  color: var(--font-col);
+  font-weight: 400;
+
+}
+
+.projs a {
+  text-decoration: underline;
+  text-decoration-thickness: 5%;
+  font: inherit;
+  font-size: 15pt;
+  color: inherit;
+}
+
+.projs a:hover::before {
+  content: "> ";
+}
+
+.projs a:hover::after {
+  content: " <";
+}
+
+@media (width <= 700px), (device-width <= 700px) {
+  .projs {
+    display: none;
+  }
+
+  .container {
+    flex-direction: column;
+    align-items: center;
+    gap: 2em;
+    justify-content: flex-start;
+  }
+
+  .sidebar {
+    align-self: flex-start;
+    flex-direction: row;
+    height: auto;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .yah {
+    display: none;
+  }
+
+
+  .nav ul {
+    direction: rtl;
+  }
+
+  .nav a:first-child {
+    margin: 0;
+  }
+
+  .nav a.current::after {
+    font-family: monospace;
+    content: " \2192";
+ }
+
+  .content-container {
+    width: 95%;
+  }
+
+  .content {
+    padding: 0;
+  }
+}
+
+@media (700px < width <= 1000px), (width <= 500px), (700px < device-width <= 1000px), (device-width <= 500px) {
+  .im-group {
+    align-items: center;
+    flex-direction: column;
+    gap: 0; 
+  }
 }
