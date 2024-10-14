@@ -1,1 +1,1 @@
-My portfolio! View [https://saaaji.github.io](here).
+My portfolio! View it [here](https://saaaji.github.io).
